@@ -30,25 +30,22 @@ Open Multi-Agent Canvas is an open-source multi-agent chat interface that levera
 
 1. **Prerequisites:**  
    - [Node.js](https://nodejs.org) (LTS version recommended)
-   - npm or yarn
+   - pnpm or yarn
 
 2. **Installation:**  
    ```bash
    # Clone the repository
    git clone <repository-url>
-   
-   # Navigate to the frontend directory
-   cd frontend
 
    # Install dependencies
-   npm install
+   pnpm install
    # or
    yarn install
    ```
 
 3. **Running the Development Server:**  
    ```bash
-   npm run dev
+   pnpm run dev
    # or
    yarn dev
    ```
@@ -76,8 +73,8 @@ Open Multi-Agent Canvas simplifies complex tasks by unifying multiple specialize
 
 The easiest way to deploy this project is with [Vercel](https://vercel.com). Build and start your application with:
 ```bash
-npm run build
-npm run start
+pnpm run build
+pnpm run start
 ```
 Follow Vercel's deployment guide for more details if needed.
 
