@@ -12,5 +12,5 @@ metadata:
     environment: prod
 spec:
   containerName: docker.aa.com/prod/navigator-ui
-  containerTag: 'v0.0.1'
+  containerTag: 'v0.0.2'
   port: 3000
