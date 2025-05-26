@@ -6,7 +6,9 @@ import {
 } from "@copilotkit/runtime";
 import OpenAI from "openai";
 
-const openai = new OpenAI();
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY || 'dummy-key-for-build'
+});
 const serviceAdapter = new OpenAIAdapter({ openai });
 
 const runtime = new CopilotRuntime({

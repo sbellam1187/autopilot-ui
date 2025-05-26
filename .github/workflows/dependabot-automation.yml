@@ -1,0 +1,59 @@
+name: Dependabot Automation
+on: 
+  pull_request_target:
+    branches: [ main ]
+    
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+  checks: read
+
+jobs:
+  dependabot-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+      - name: 'Dependency Review'
+        uses: actions/dependency-review-action@v4
+        with:
+          comment-summary-in-pr: true
+          warn-only: true
+  dependabot-autoapprove:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    steps:
+      - name: Generate Token
+        uses: octo-sts/action@210248e8ae1ae1550aa6e232c6f192b3ccbf7335 # 210248e8ae1ae1550aa6e232c6f192b3ccbf7335
+        id: octo-sts
+        with:
+          scope: AAInternal/aa-graph-mcp-server
+          identity: yoda
+          domain: octo-sts.cloud.aa.com
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@d7267f607e9d3fb96fc2fbe83e0af444713e90b7 # v2
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Approve the PR for minor and patch dependencies
+        id: approval
+        if: steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        run: |
+          gh pr review --approve "$PR_URL"
+          gh label create "Dependabot-Approved" --description "Approved by Dependabot Automation" --color "#0E8A16" --repo "${{ github.repository }}" || echo "Dependabot-Approved label already exists"
+          gh pr edit "$PR_URL" --add-label "Dependabot-Approved"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GH_TOKEN: ${{steps.octo-sts.outputs.token}}
+      - name: Validate if all checks passed
+        if: ${{ success() && steps.approval.outcome != 'skipped' }}
+        id: checkspassed
+        uses: wechuli/allcheckspassed@e22f45a4f25f4cf821d1273705ac233355400db1 # v1
+      - name: Enable auto-merge
+        if: ${{ success() && steps.approval.outcome != 'skipped' }}
+        run: |
+          gh pr merge "$PR_URL" --auto --squash
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GH_TOKEN: ${{steps.octo-sts.outputs.token}}

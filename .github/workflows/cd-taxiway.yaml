@@ -1,0 +1,32 @@
+name: CD
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ closed ]
+    paths-ignore:
+        - "**/*.md"
+
+permissions:
+  contents: write
+  id-token: write
+  issues: read
+  pull-requests: write
+
+jobs:
+  call-cd-reusable-workflows:
+    name: CD
+    if: github.event.pull_request.merged == true
+    uses: AAInternal/dte-reusable-workflows/.github/workflows/cd_workflow.yaml@v6
+    with:
+      APP_NAME: navigator-ui
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      CHERWELL_APP_NAME: 'Enterprise API Management (GraphQL)'   
+      CHERWELL_BADGE_NUMBER: '00847763'
+      CHERWELL_TEAM: 'TnT CEP Data Movement'
+      CHERWELL_DESCRIPTION: 'Update to navigator-ui frontend for project yoda genai application'
+      CHERWELL_AFFECTED_CONFIG_ITEMS: 'navigator-ui,navigator-agents' # Required for Cherwell. List of Config Items being modified/affected. Multi line. 
+      CHERWELL_APPLICATION_LOCATION: 'Azure East' # Required for Cherwell. List of Locations where application is live. Comma separated.
+      AUTO_DEPLOY_K8s: "true"
+      WEBAPP_YAML_FILE_PATH: "k8s/prod/webapp.yaml"  
+    secrets: inherit

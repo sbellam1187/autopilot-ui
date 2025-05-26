@@ -1,0 +1,61 @@
+version: 2
+registries:
+  npm-registry:
+    type: npm-registry
+    url: https://npm.aa.com/prod
+    username: ${{ secrets.CLOUDSMITH_CRED_USR }}
+    password: ${{ secrets.CLOUDSMITH_CRED_PAT }}
+  docker:
+    type: docker-registry
+    url: https://docker.aa.com
+    username: ${{ secrets.CLOUDSMITH_CRED_USR }}
+    password: ${{ secrets.CLOUDSMITH_CRED_PAT }}
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    registries:
+      - npm-registry
+    schedule:
+      interval: "weekly"
+      time: "07:00"
+      timezone: "America/Chicago"
+    commit-message:
+      prefix: "fix(deps)"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+    groups:
+      npm-group:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      time: "07:00"
+      timezone: "America/Chicago"
+    commit-message:
+      prefix: "fix(deps)"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+    groups:
+      actions-group:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    registries:
+      - docker
+    schedule:
+      interval: "weekly"
+      time: "07:00"
+      timezone: "America/Chicago"
+    commit-message:
+      prefix: "fix(deps)"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

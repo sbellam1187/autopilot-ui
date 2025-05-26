@@ -1,0 +1,16 @@
+apiVersion: runway.aa.com/v1alpha1
+kind: WebApp
+metadata:
+  name: navigator-ui
+  annotations:
+    enableCloudIngress: "true"
+    backstageName: navigator-ui
+  labels:
+    app-id: navigator-ui
+    aa-app-shortname: APIMgmtGQL
+    data-classification: nonpci
+    environment: prod
+spec:
+  containerName: docker.aa.com/prod/navigator-ui
+  containerTag: 'v0.0.1'
+  port: 3000

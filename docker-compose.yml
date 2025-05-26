@@ -1,0 +1,29 @@
+version: '3'
+services:
+  frontend:
+    container_name: navigator-ui
+    image: localhost/navigator-ui:latest #docker.aa.com/prod/navigator-ui:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - REMOTE_ACTION_URL=http://agents:8000/copilotkit
+
+  agents:
+    container_name: navigator-agents
+    image: localhost/navigator-agents:latest #docker.aa.com/prod/navigator-agents:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=
+      - OPENAI_MODEL=gpt-4o
+      - OPENAI_BASE_URL=https://models.inference.ai.azure.com
+      - AA_GRAPH_MCP_SERVER_URL=http://host.docker.internal:8002/sse
+
+  aa-graph-mcp-server:
+    container_name: aa-graph-mcp-server
+    image: docker.aa.com/prod/aa-graph-mcp-server:v0.0.2 #localhost/aa-graph-mcp-server:latest
+    ports:
+      - "8002:8000"
+    environment:
+      - GRAPHQL_API_TOKEN=
+      - GRAPHQL_CLIENT_NAME=apimgmtgql

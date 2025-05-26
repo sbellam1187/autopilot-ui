@@ -26,7 +26,31 @@ Open Multi-Agent Canvas is an open-source multi-agent chat interface that levera
 - **Mapping:** [Leaflet](https://leafletjs.com) with [React Leaflet](https://react-leaflet.js.org)
 - **Styling:** Tailwind CSS
 
-## Setup Instructions
+## Quick Start using Docker Compose (ui, agents, and internal mcp server)
+1. **Prerequisites:**  
+   - docker or podman
+
+2. **Setup:**
+   ```bash
+   # Clone the repository
+   git clone <repository-url>
+   ```
+  
+   - update environment variables in docker-compose.yaml
+   ```docker
+   - OPENAI_API_KEY=
+   - GRAPHQL_API_TOKEN=
+   ```
+
+3. **Run the Application:**  
+   ```bash
+   docker compose up
+   # or
+   podman compose up
+   ```
+   Then, open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Setup Instructions (ui only)
 
 1. **Prerequisites:**  
    - [Node.js](https://nodejs.org) (LTS version recommended)

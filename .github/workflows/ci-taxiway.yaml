@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened, edited ]
+    paths-ignore:
+      - "**/*.md"
+
+permissions:
+  id-token: write
+  pull-requests: write
+  contents: write
+  issues: write   
+
+jobs:
+  call-ci-reusable-workflows:
+    name: CI
+    uses: AAInternal/dte-reusable-workflows/.github/workflows/js_ci_workflow.yaml@v6
+    with:
+      NODE_VERSION: 23
+      PACKAGE_MANAGER: npm
+      BUILD_COMMAND: run build
+      APP_NAME: navigator-ui
+    secrets: inherit

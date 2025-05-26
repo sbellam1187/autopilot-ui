@@ -1,0 +1,20 @@
+apiVersion: runway.aa.com/v1alpha2
+kind: Ephemeral
+metadata:
+  name: navigatoruiephemeral
+  annotations:
+    enableCloudIngress: "true"
+    backstageName: navigator-ui
+  labels:
+    app-id: navigator-ui-nonprod
+    runway.aa.com/aa-app-shortname: APIMgmtGQL
+    data-classification: nonpci
+    environment: nonprod
+spec:
+  repo: navigator-ui
+  maxEphemerals: 10
+  maxDaysWithoutUpdate: 4
+  template:
+    containerName: docker.aa.com/nonprod/navigator-ui
+    containerTag: placeholder
+    port: 3000

@@ -1,0 +1,19 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: navigator-ui
+  description: "navigator ui frontend for project yoda genai application"
+  annotations:
+    github.com/project-slug: "AAInternal/navigator-ui"
+    argocd/app-selector: "backstage-name=navigator-ui"
+    backstage.io/kubernetes-label-selector: "backstage.io/kubernetes-id=navigator-ui"
+  tags:
+    - node
+    - yarn
+    - genai
+    - llm
+    - chatbot
+spec:
+  type: service
+  lifecycle: experimental
+  owner: 'data-movement'
