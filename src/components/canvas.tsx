@@ -6,6 +6,7 @@ import { AvailableAgents } from "@/lib/available-agents";
 import { useCoAgent } from "@copilotkit/react-core";
 import { CircleOff, Loader2, Settings } from "lucide-react";
 import { Suspense, useState } from "react";
+import Image from "next/image";
 import { ChatWindow } from "./chat-window";
 import { MCPConfigModal } from "./mcp-config-modal";
 
@@ -22,11 +23,20 @@ const getCurrentlyRunningAgent = (
 const DefaultView = () => (
   <div className="flex items-center justify-center h-full text-gray-600">
     <p className="text-2xl text-center font-serif italic max-w-3xl">
-      <strong>Powered by CopilotKit 🪁</strong>
+      <strong className="flex items-center justify-center gap-2">
+        Welcome to Autopilot 
+        <Image 
+          src="/baby-yoda.png" 
+          alt="Baby Yoda" 
+          width={32} 
+          height={32} 
+          className="inline-block"
+          priority
+        />
+      </strong>
       <br />
-      <br />
-      Start a conversation in the chat to begin planning your
-      trip, researching topics, or use the MCP agent for other tasks!
+      Start a conversation in the chat to begin searching for users, researching application details, 
+      creating documents for your application, use the MCP agent for other tasks, or add your own MCP servers!
     </p>
   </div>
 );

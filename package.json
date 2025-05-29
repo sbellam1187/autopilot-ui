@@ -10,10 +10,11 @@
     "test": "echo \"Info: no tests provided\" && exit 0"
   },
   "dependencies": {
-    "@copilotkit/react-core": "1.5.18",
-    "@copilotkit/react-ui": "1.5.18",
+    "@copilotkit/react-core": "^1.5.18",
+    "@copilotkit/react-ui": "^1.5.18",
     "@copilotkit/runtime": "1.8.11",
     "@copilotkit/runtime-client-gql": "1.8.10",
+    "@langchain/ollama": "^0.2.0",
     "@radix-ui/react-checkbox": "^1.1.4",
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-separator": "^1.1.2",
@@ -28,13 +29,13 @@
     "leaflet-defaulticon-compatibility": "^0.1.2",
     "lucide-react": "^0.474.0",
     "next": "15.1.6",
+    "openai": "^4.85.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-leaflet": "^5.0.0",
     "react-markdown": "^9.0.3",
     "tailwind-merge": "^3.0.1",
-    "tailwindcss-animate": "^1.0.7",
-    "openai": "^4.85.1"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
