@@ -29,8 +29,16 @@ Open Multi-Agent Canvas is an open-source multi-agent chat interface that levera
 ## Quick Start using Docker Compose (ui, agents, and internal mcp server)
 1. **Prerequisites:**  
    - docker or podman
+   - github pat token with necessary permissions like `models
 
-2. **Setup:**
+2. **Docker login (one-time)**
+   ```bash
+   docker login docker.aa.com
+   username -> username from cloudsmith
+   password -> apikey from cloudsmith
+   ```
+
+3. **Setup:**
    ```bash
    # Clone the repository
    git clone <repository-url>
@@ -38,13 +46,13 @@ Open Multi-Agent Canvas is an open-source multi-agent chat interface that levera
   
    - update environment variables in docker-compose.yaml
    ```docker
-   - OPENAI_API_KEY=
-   - GRAPHQL_API_TOKEN=
+   - OPENAI_API_KEY=<your-github-token-with-models-scope>
+   - GRAPHQL_API_TOKEN=<test-apigee-token>
    ```
 
-3. **Run the Application:**  
+4. **Run the Application:**  
    ```bash
-   docker compose up
+   docker-compose up
    # or
    podman compose up
    ```

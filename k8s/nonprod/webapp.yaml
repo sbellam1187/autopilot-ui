@@ -1,7 +1,7 @@
 apiVersion: runway.aa.com/v1alpha1
 kind: WebApp
 metadata:
-  name: autopilot-ui
+  name: autopilot-ui-nonprod
   annotations:
     enableCloudIngress: "true"
     backstageName: autopilot-ui
@@ -9,7 +9,7 @@ metadata:
     app-id: autopilot-ui
     aa-app-shortname: APIMgmtGQL
     data-classification: nonpci
-    environment: prod
+    environment: nonprod
 spec:
   containerName: docker.aa.com/prod/autopilot-ui
   containerTag: 'v0.1.0'
@@ -20,11 +20,11 @@ spec:
     port: 3000
   secretProviders:
     - vault:
-        vaultNamespace: automation/apimgmtgql-autopilot-p
+        vaultNamespace: automation/apimgmtgql-autopilotnp-p
         secretEngineMount: secrets
-        secretPath: prod
+        secretPath: nonprod
   autoscale:
     minimum: 1
     maximum: 2
   reachableServices:
-    - autopilot-agents.autopilot-prod.svc.8000.mesh
+    - autopilot-agents-nonprod.autopilot-nonprod.svc.8000.mesh
