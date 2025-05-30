@@ -1,7 +1,7 @@
 apiVersion: runway.aa.com/v1alpha1
 kind: WebApp
 metadata:
-  name: autopilot-ui-nonprod
+  name: autopilot-nonprod
   annotations:
     enableCloudIngress: "true"
     backstageName: autopilot-ui
