@@ -58,7 +58,7 @@ jobs:
           git push origin HEAD:main
 
       - name: Validate AA Yaml
-        uses: AAInternal/aa-yaml-validator@v2.2.0
+        uses: AAInternal/aa-yaml-validator@v2.3.1
         id: aa-yaml
 
       # The URL for tower action is https://github.com/AAInternal/tower-action
