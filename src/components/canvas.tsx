@@ -4,11 +4,13 @@ import * as Agents from "@/components/agents";
 import * as Skeletons from "@/components/skeletons";
 import { AvailableAgents } from "@/lib/available-agents";
 import { useCoAgent } from "@copilotkit/react-core";
-import { CircleOff, Loader2, Settings } from "lucide-react";
+import { CircleOff, Loader2, Settings, User } from "lucide-react";
 import { Suspense, useState } from "react";
 import Image from "next/image";
 import { ChatWindow } from "./chat-window";
 import { MCPConfigModal } from "./mcp-config-modal";
+import { useSession } from "next-auth/react"
+
 
 const getCurrentlyRunningAgent = (
   state: Array<{
@@ -43,6 +45,7 @@ const DefaultView = () => (
 
 export default function Canvas() {
   const [showMCPConfigModal, setShowMCPConfigModal] = useState(false);
+  const { data: session } = useSession();
 
   const {
     running: travelAgentRunning,
@@ -98,7 +101,7 @@ export default function Canvas() {
         </div>
       ) : (
         <div className="absolute top-4 right-4 flex gap-2 z-[9999]">
-          <button 
+          <button
             onClick={() => setShowMCPConfigModal(true)}
             className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2"
           >
@@ -109,6 +112,10 @@ export default function Canvas() {
           <div className="bg-gray-600 text-white px-4 py-2 rounded-full shadow-lg">
             <CircleOff className="inline-block w-4 h-4 mr-2 animate-spin" />
             <span className="font-bold">Multi-Agent</span>
+          </div>
+          <div className=" text-gray-600 px-4 py-2">
+            <User className="inline-block w-5 h-5 mr-2" />
+            <span className="font-bold">{session?.user?.name}</span>
           </div>
         </div>
       )}
@@ -130,7 +137,7 @@ export default function Canvas() {
       </div>
 
       {/* MCP Config Modal */}
-      <MCPConfigModal 
+      <MCPConfigModal
         isOpen={showMCPConfigModal}
         onClose={() => setShowMCPConfigModal(false)}
       />

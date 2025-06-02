@@ -18,3 +18,8 @@ spec:
     containerName: docker.aa.com/nonprod/autopilot-ui
     containerTag: placeholder
     port: 3000
+  env:
+    - name: AUTH_WELLKNOWN
+      value: 'https://idptest.aa.com/.well-known/openid-configuration'
+    - name: NEXTAUTH_URL
+      value: https://{{ .Context.EphemeralName }}.cloud.aa.com
