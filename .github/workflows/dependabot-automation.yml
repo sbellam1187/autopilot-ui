@@ -41,8 +41,6 @@ jobs:
         if: steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch'
         run: |
           gh pr review --approve "$PR_URL"
-          gh label create "Dependabot-Approved" --description "Approved by Dependabot Automation" --color "#0E8A16" --repo "${{ github.repository }}" || echo "Dependabot-Approved label already exists"
-          gh pr edit "$PR_URL" --add-label "Dependabot-Approved"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GH_TOKEN: ${{steps.octo-sts.outputs.token}}
