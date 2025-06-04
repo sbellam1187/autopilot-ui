@@ -1,38 +1,24 @@
-version: '3'
 services:
   frontend:
     container_name: navigator-ui
-    image: docker.aa.com/prod/navigator-ui:v0.1.0 #localhost/navigator-ui:latest
+    image: docker.aa.com/prod/autopilot-ui:v0.3.2 #localhost/autopilot-ui:latest
     ports:
       - "3000:3000"
-    environment:
-      - LLM_PROVIDER=ollama #use 'openai' for OpenAI models, 'ollama' for local models
-      - OPENAI_API_KEY=
-      - OPENAI_MODEL=openai/gpt-4.1
-      - OPENAI_BASE_URL=https://models.github.ai/inference
-      - OLLAMA_MODEL=qwen3
-      - OLLAMA_BASE_URL=http://host.docker.internal:11434
-      - REMOTE_ACTION_URL=http://agents:8000/copilotkit
+    env_file:
+      - .env
 
   agents:
     container_name: navigator-agents
-    image: docker.aa.com/prod/navigator-agents:v0.1.0 #localhost/navigator-agents:latest #
+    image: docker.aa.com/prod/autopilot-agents:v0.2.1 #localhost/autopilot-agents:latest
     ports:
       - "8000:8000"
-    environment:
-      - LLM_PROVIDER=ollama #use 'openai' for OpenAI models, 'ollama' for local models
-      - OPENAI_API_KEY=
-      - OPENAI_MODEL=openai/gpt-4.1
-      - OPENAI_BASE_URL=https://models.github.ai/inference
-      - OLLAMA_MODEL=qwen3
-      - OLLAMA_BASE_URL=http://host.docker.internal:11434
-      - AA_GRAPH_MCP_SERVER_URL=http://host.docker.internal:8002/sse
+    env_file:
+      - .env
 
   aa-graph-mcp-server:
     container_name: aa-graph-mcp-server
     image: docker.aa.com/prod/aa-graph-mcp-server:v0.0.2 #localhost/aa-graph-mcp-server:latest
     ports:
       - "8002:8000"
-    environment:
-      - GRAPHQL_API_TOKEN=
-      - GRAPHQL_CLIENT_NAME=apimgmtgql
+    env_file:
+      - .env
