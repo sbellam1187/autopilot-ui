@@ -14,8 +14,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Open Multi-Agent Canvas",
-  description: "Open Multi-Agent Canvas by CopilotKit",
+  title: "Autopilot Chat",
+  description: "A GenAI Chatbot for American Airlines",
 };
 
 export default function RootLayout({
