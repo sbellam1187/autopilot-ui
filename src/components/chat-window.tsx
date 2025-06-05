@@ -24,8 +24,7 @@ export const ChatWindow: FC = () => {
       instructions={
         "Always use the MCP Agent if you need to use the MCP Servers. You are a multi-agent chat system with specialized agents:\n" +
         "- MCP Agent: For general or multipurpose tasks use the mcp_agent\n" +
-        "- Sample Agent: For weather related queries use the sample_agent\n" +
-        "- Research Agent: You are a helpful research assistant, set to help the user with conduction and writing a research paper on any topic using the ai_researcher agent."
+        "- Sample Agent: For weather related queries use the sample_agent"
       }
       labels={{
         placeholder: "Type your message here...",

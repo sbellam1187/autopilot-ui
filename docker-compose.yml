@@ -1,7 +1,7 @@
 services:
   frontend:
     container_name: navigator-ui
-    image: docker.aa.com/prod/autopilot-ui:v0.3.2 #localhost/autopilot-ui:latest
+    image: docker.aa.com/prod/autopilot-ui:v0.6.0 #localhost/autopilot-ui:latest
     ports:
       - "3000:3000"
     env_file:
@@ -9,7 +9,7 @@ services:
 
   agents:
     container_name: navigator-agents
-    image: docker.aa.com/prod/autopilot-agents:v0.2.1 #localhost/autopilot-agents:latest
+    image: docker.aa.com/prod/autopilot-agents:v0.3.0 #localhost/autopilot-agents:latest
     ports:
       - "8000:8000"
     env_file:
@@ -17,7 +17,7 @@ services:
 
   aa-graph-mcp-server:
     container_name: aa-graph-mcp-server
-    image: docker.aa.com/prod/aa-graph-mcp-server:v0.0.2 #localhost/aa-graph-mcp-server:latest
+    image: docker.aa.com/prod/aa-graph-mcp-server:v0.1.0 #localhost/aa-graph-mcp-server:latest
     ports:
       - "8002:8000"
     env_file:

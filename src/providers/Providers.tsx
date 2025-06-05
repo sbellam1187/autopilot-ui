@@ -14,7 +14,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <CopilotKit
         showDevConsole={false}
         runtimeUrl="/api/copilotkit"
-        agent="mcp_agent" // the name of the agent you want to use
+        agent="supervisor_agent" // the name of the agent you want to use
       >
         <CoAgentsProvider>{children}</CoAgentsProvider>
       </CopilotKit>
