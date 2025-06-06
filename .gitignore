@@ -41,3 +41,6 @@ index.d.ts
 
 frontend/node_modules
 frontend/.next
+
+# database files
+pgdata

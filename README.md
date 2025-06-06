@@ -44,10 +44,10 @@ Open Multi-Agent Canvas is an open-source multi-agent chat interface that levera
    git clone <repository-url>
    ```
   
-   - update environment variables in docker-compose.yaml
-   ```docker
+   - copy example.env to .env and update variables accordingly
+   ```
    - OPENAI_API_KEY=<your-github-token-with-models-scope>
-   - GRAPHQL_API_TOKEN=<test-apigee-token>
+   - GRAPHQL_API_TOKEN=<test-apigee-or-sam-token>
    ```
 
 4. **Run the Application:**  
