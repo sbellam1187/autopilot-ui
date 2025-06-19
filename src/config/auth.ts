@@ -1,5 +1,12 @@
 import { NextAuthOptions } from "next-auth";
 
+// Extend the NextAuth session interface to include a token
+declare module "next-auth" {
+  interface Session {
+    token?: string;
+  }
+}
+
 export const AUTH_AA_PROVIDER_ID = "ping";
 
 export interface UserProfile {
@@ -18,6 +25,25 @@ export const authConfig: NextAuthOptions = {
   callbacks: {
     async redirect({ baseUrl }) {
       return baseUrl;
+    },
+    async jwt({ token, account }) {
+      if (account) {
+        token.idToken = account.id_token;
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      try {
+        if (!session || !token) {
+          throw new Error("Session or token is undefined");
+        }
+
+        session.token = token.idToken as string;
+      } catch (error) {
+        console.error("Error setting session token:", error);
+      }
+      return session;
     },
   },
   pages: {
