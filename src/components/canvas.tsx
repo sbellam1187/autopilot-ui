@@ -5,19 +5,24 @@ import * as Skeletons from "@/components/skeletons";
 import { AvailableAgents } from "@/lib/available-agents";
 import { useCoAgent } from "@copilotkit/react-core";
 import { Loader2, Settings, User } from "lucide-react";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Image from "next/image";
-import { ChatWindow } from "./chat-window";
 import { MCPConfigModal } from "./mcp-config-modal";
-import { useSession } from "next-auth/react"
-
+import ChatWindowV2 from "@/components/chat-window-v2";
+import { useCopilotChatContext } from "@/context/CopilotChatContext";
+import { MessageRole } from "@copilotkit/runtime-client-gql";
+import { containsMarkdown } from "@/lib/actions";
+import { Markdown } from "./ui/markdown";
+import { useSession } from "next-auth/react";
+import ThemeToggle from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
 
 const getCurrentlyRunningAgent = (
   state: Array<{
     status: boolean;
     name: string;
     nodeName: string;
-  }>
+  }>,
 ) => {
   return state.find((agent) => agent.status);
 };
@@ -26,25 +31,41 @@ const DefaultView = () => (
   <div className="flex items-center justify-center h-full text-gray-600">
     <p className="text-2xl text-center font-serif italic max-w-3xl">
       <strong className="flex items-center justify-center gap-2">
-        Welcome to Autopilot 
-        <Image 
-          src="/baby-yoda.png" 
-          alt="Baby Yoda" 
-          width={32} 
-          height={32} 
+        Welcome to Autopilot
+        <Image
+          src="/baby-yoda.png"
+          alt="Baby Yoda"
+          width={32}
+          height={32}
           className="inline-block"
           priority
         />
       </strong>
       <br />
-      Start a conversation in the chat to begin searching for users, researching application details, 
-      creating documents for your application, use the MCP agent for other tasks, or add your own MCP servers!
+      Start a conversation in the chat to begin searching for users, researching
+      application details, creating documents for your application, use the MCP
+      agent for other tasks, or add your own MCP servers!
     </p>
   </div>
 );
 
 export default function Canvas() {
   const [showMCPConfigModal, setShowMCPConfigModal] = useState(false);
+  const { visibleMessages } = useCopilotChatContext();
+  const [markDownMessage, setMarkdownMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const lastMessage = visibleMessages[visibleMessages.length - 1];
+
+    if (
+      lastMessage &&
+      lastMessage.isTextMessage() &&
+      lastMessage.role !== MessageRole.User &&
+      containsMarkdown(lastMessage.content)
+    ) {
+      setMarkdownMessage(lastMessage.content);
+    }
+  }, [visibleMessages]);
   const { data: session } = useSession();
 
   const {
@@ -101,32 +122,38 @@ export default function Canvas() {
         </div>
       ) : (
         <div className="absolute top-4 right-4 flex gap-2 z-[9999]">
-          <button
+          <Button
             onClick={() => setShowMCPConfigModal(true)}
-            className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2"
+            className="rounded-full shadow-lg"
           >
             <Settings className="w-4 h-4" />
             <span className="font-medium">MCP Servers</span>
-          </button>
+          </Button>
 
-          <div className=" text-gray-600 px-4 py-2">
+          <div className="px-4 py-2">
             <User className="inline-block w-5 h-5 mr-2" />
             <span className="font-bold">{session?.user?.name}</span>
           </div>
+          <ThemeToggle />
         </div>
       )}
       <div className="order-last md:order-first md:col-span-4 p-4 border-r h-screen overflow-y-auto">
-        <ChatWindow />
+        <ChatWindowV2 />
       </div>
-
-      <div className="order-first md:order-last md:col-span-8 bg-white p-8 overflow-y-auto">
+      <div className="order-first md:order-last md:col-span-8 p-8 overflow-y-auto">
         <div className="space-y-8 h-full">
           <Suspense fallback={<Skeletons.EmailListSkeleton />}>
             <div className="h-full">
               <Agents.TravelAgent />
               <Agents.AIResearchAgent />
               <Agents.MCPAgent />
-              {!currentlyRunningAgent?.status && <DefaultView />}
+              {markDownMessage === null ? (
+                <DefaultView />
+              ) : (
+                <div className="mt-10">
+                  <Markdown>{markDownMessage}</Markdown>
+                </div>
+              )}
             </div>
           </Suspense>
         </div>
@@ -135,7 +162,7 @@ export default function Canvas() {
       {/* MCP Config Modal */}
       <MCPConfigModal
         isOpen={showMCPConfigModal}
-        onClose={() => setShowMCPConfigModal(false)}
+        onCloseAction={() => setShowMCPConfigModal(false)}
       />
     </div>
   );

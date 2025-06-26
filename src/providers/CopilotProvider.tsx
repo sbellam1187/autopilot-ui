@@ -8,7 +8,11 @@ import { CoAgentsProvider } from "@/components/coagents-provider";
 
 const queryClient = new QueryClient();
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function CopilotProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <QueryClientProvider client={queryClient}>
       <CopilotKit
