@@ -5,13 +5,11 @@ import * as Skeletons from "@/components/skeletons";
 import { AvailableAgents } from "@/lib/available-agents";
 import { useCoAgent } from "@copilotkit/react-core";
 import { Loader2, Settings, User } from "lucide-react";
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState } from "react";
 import Image from "next/image";
 import { MCPConfigModal } from "./mcp-config-modal";
-import ChatWindowV2 from "@/components/chat-window-v2";
+import ChatWindow from "@/components/chat-window";
 import { useCopilotChatContext } from "@/context/CopilotChatContext";
-import { MessageRole } from "@copilotkit/runtime-client-gql";
-import { containsMarkdown } from "@/lib/actions";
 import { Markdown } from "./ui/markdown";
 import { useSession } from "next-auth/react";
 import ThemeToggle from "@/components/theme-toggle";
@@ -51,21 +49,8 @@ const DefaultView = () => (
 
 export default function Canvas() {
   const [showMCPConfigModal, setShowMCPConfigModal] = useState(false);
-  const { visibleMessages } = useCopilotChatContext();
-  const [markDownMessage, setMarkdownMessage] = useState<string | null>(null);
+  const { responseMessage } = useCopilotChatContext();
 
-  useEffect(() => {
-    const lastMessage = visibleMessages[visibleMessages.length - 1];
-
-    if (
-      lastMessage &&
-      lastMessage.isTextMessage() &&
-      lastMessage.role !== MessageRole.User &&
-      containsMarkdown(lastMessage.content)
-    ) {
-      setMarkdownMessage(lastMessage.content);
-    }
-  }, [visibleMessages]);
   const { data: session } = useSession();
 
   const {
@@ -138,7 +123,7 @@ export default function Canvas() {
         </div>
       )}
       <div className="order-last md:order-first md:col-span-4 p-4 border-r h-screen overflow-y-auto">
-        <ChatWindowV2 />
+        <ChatWindow />
       </div>
       <div className="order-first md:order-last md:col-span-8 p-8 overflow-y-auto">
         <div className="space-y-8 h-full">
@@ -147,11 +132,11 @@ export default function Canvas() {
               <Agents.TravelAgent />
               <Agents.AIResearchAgent />
               <Agents.MCPAgent />
-              {markDownMessage === null ? (
+              {responseMessage === null ? (
                 <DefaultView />
               ) : (
                 <div className="mt-10">
-                  <Markdown>{markDownMessage}</Markdown>
+                  <Markdown>{responseMessage.message.content}</Markdown>
                 </div>
               )}
             </div>

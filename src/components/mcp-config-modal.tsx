@@ -155,7 +155,7 @@ export function MCPConfigModal({ isOpen, onCloseAction }: MCPConfigModalProps) {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
               <Server className="h-6 w-6 mr-2 text-gray-700" />
-              <h1 className="text-2xl font-semibold">
+              <h1 className="text-2xl text-secondary font-semibold">
                 MCP Server Configuration
               </h1>
             </div>

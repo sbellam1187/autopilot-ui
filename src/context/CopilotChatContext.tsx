@@ -1,15 +1,34 @@
 "use client";
 
-import React, { createContext, useContext, ReactNode } from "react";
+import React, { createContext, useContext, ReactNode, useState } from "react";
 import {
   useCopilotChat,
   UseCopilotChatOptions,
   UseCopilotChatReturn,
 } from "@copilotkit/react-core";
+import { TextMessage } from "@copilotkit/runtime-client-gql";
 
-const CopilotChatContext = createContext<UseCopilotChatReturn | undefined>(
-  undefined,
-);
+export type ResponseBlockType = {
+  message: TextMessage;
+  id: string;
+  title: string;
+  type: string;
+};
+
+interface ExtendedCopilotChatContext extends UseCopilotChatReturn {
+  responseMessage: ResponseBlockType | null;
+  setResponseMessage: React.Dispatch<
+    React.SetStateAction<ResponseBlockType | null>
+  >;
+  responseMessages: ResponseBlockType[];
+  setResponseMessages: React.Dispatch<
+    React.SetStateAction<ResponseBlockType[]>
+  >;
+}
+
+const CopilotChatContext = createContext<
+  ExtendedCopilotChatContext | undefined
+>(undefined);
 
 interface CopilotChatProviderProps {
   children: ReactNode;
@@ -22,14 +41,28 @@ export function CopilotChatProvider({
 }: CopilotChatProviderProps) {
   const chatMethods = useCopilotChat(options);
 
+  const [responseMessage, setResponseMessage] =
+    useState<ResponseBlockType | null>(null);
+  const [responseMessages, setResponseMessages] = useState<ResponseBlockType[]>(
+    [],
+  );
+
+  const contextValue: ExtendedCopilotChatContext = {
+    ...chatMethods,
+    responseMessage,
+    setResponseMessage,
+    responseMessages,
+    setResponseMessages,
+  };
+
   return (
-    <CopilotChatContext.Provider value={chatMethods}>
+    <CopilotChatContext.Provider value={contextValue}>
       {children}
     </CopilotChatContext.Provider>
   );
 }
 
-export function useCopilotChatContext(): UseCopilotChatReturn {
+export function useCopilotChatContext(): ExtendedCopilotChatContext {
   const context = useContext(CopilotChatContext);
 
   if (context === undefined) {
