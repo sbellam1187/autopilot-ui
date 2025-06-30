@@ -5,7 +5,7 @@ import {
   copilotRuntimeNextJSAppRouterEndpoint,
 } from "@copilotkit/runtime";
 import { ChatOllama } from "@langchain/ollama";
-import { ChatOpenAI } from "@langchain/openai";
+import { ChatOpenAI, AzureChatOpenAI } from "@langchain/openai";
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/config/auth";
@@ -25,7 +25,14 @@ const createLLMModel = ({ tools }: { tools: DynamicStructuredTool[] }) => {
         model: process.env.OLLAMA_MODEL || "qwen3",
         baseUrl: process.env.OLLAMA_BASE_URL || "http://localhost:11434",
       }).withConfig({ tools });
-
+    case "azureopenai":
+      return new AzureChatOpenAI({
+        model: process.env.OPENAI_MODEL || "gpt-4o",
+        apiKey: process.env.OPENAI_API_KEY || "dummy-key-for-build",
+        azureOpenAIEndpoint: process.env.OPENAI_BASE_URL || "https://openai.azure.com/",
+        azureOpenAIApiVersion: process.env.OPENAI_API_VERSION || "2024-12-01-preview",
+        azureOpenAIApiDeploymentName: process.env.OPENAI_DEPLOYMENT_NAME || "gpt-4o-classification",
+      }).withConfig({ tools });
     case "openai":
     default:
       return new ChatOpenAI({
