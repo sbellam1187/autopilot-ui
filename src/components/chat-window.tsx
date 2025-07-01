@@ -63,7 +63,6 @@ export default function ChatWindow() {
         } as ResponseBlockType;
       });
 
-    console.log(responseMessages);
     if (markdownMessages.length > 0) {
       const latestMarkdownMessage =
         markdownMessages[markdownMessages.length - 1];

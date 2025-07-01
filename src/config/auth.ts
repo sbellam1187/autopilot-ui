@@ -4,6 +4,12 @@ import { NextAuthOptions } from "next-auth";
 declare module "next-auth" {
   interface Session {
     token?: string;
+    githubToken?: string;
+  }
+
+  interface JWT {
+    isToken?: string;
+    githubToken?: string;
   }
 }
 
@@ -26,9 +32,20 @@ export const authConfig: NextAuthOptions = {
     async redirect({ baseUrl }) {
       return baseUrl;
     },
-    async jwt({ token, account }) {
+    async jwt({ token, account, trigger, session }) {
       if (account) {
         token.idToken = account.id_token;
+        if (token.githubToken && account.access_token) {
+          token.githubToken = account.access_token;
+        }
+      }
+
+      if (trigger === "update") {
+        if (session?.githubToken) {
+          token.githubToken = session.githubToken;
+        } else {
+          token.githubToken = null;
+        }
       }
 
       return token;
@@ -40,6 +57,10 @@ export const authConfig: NextAuthOptions = {
         }
 
         session.token = token.idToken as string;
+
+        if (token.githubToken) {
+          session.githubToken = token.githubToken as string;
+        }
       } catch (error) {
         console.error("Error setting session token:", error);
       }

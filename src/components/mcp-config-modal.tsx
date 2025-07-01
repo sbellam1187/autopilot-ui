@@ -139,8 +139,8 @@ export function MCPConfigModal({ isOpen, onCloseAction }: MCPConfigModalProps) {
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
-        <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative z-[10000]">
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-9999">
+        <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative z-10000">
           <div className="p-4">Loading configuration...</div>
         </div>
       </div>
@@ -148,8 +148,8 @@ export function MCPConfigModal({ isOpen, onCloseAction }: MCPConfigModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
-      <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative z-[10000]">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-9999">
+      <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative z-10000">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
@@ -211,7 +211,7 @@ export function MCPConfigModal({ isOpen, onCloseAction }: MCPConfigModalProps) {
               {Object.entries(configs).map(([name, config]) => (
                 <div
                   key={name}
-                  className="border rounded-md overflow-hidden bg-white shadow-sm"
+                  className="border rounded-md overflow-hidden bg-white shadow-xs"
                 >
                   <div className="p-4">
                     <div className="flex justify-between items-start">

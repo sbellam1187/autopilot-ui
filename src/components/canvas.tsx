@@ -4,16 +4,15 @@ import * as Agents from "@/components/agents";
 import * as Skeletons from "@/components/skeletons";
 import { AvailableAgents } from "@/lib/available-agents";
 import { useCoAgent } from "@copilotkit/react-core";
-import { Loader2, Settings, User } from "lucide-react";
-import { Suspense, useState } from "react";
+import { Loader2, User } from "lucide-react";
+import { Suspense } from "react";
 import Image from "next/image";
-import { MCPConfigModal } from "./mcp-config-modal";
 import ChatWindow from "@/components/chat-window";
 import { useCopilotChatContext } from "@/context/CopilotChatContext";
 import { Markdown } from "./ui/markdown";
 import { useSession } from "next-auth/react";
 import ThemeToggle from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
+import SettingsButton from "@/components/settings-button";
 
 const getCurrentlyRunningAgent = (
   state: Array<{
@@ -48,7 +47,6 @@ const DefaultView = () => (
 );
 
 export default function Canvas() {
-  const [showMCPConfigModal, setShowMCPConfigModal] = useState(false);
   const { responseMessage } = useCopilotChatContext();
 
   const { data: session } = useSession();
@@ -98,7 +96,7 @@ export default function Canvas() {
   return (
     <div className="relative h-full w-full grid grid-cols-1 md:grid-cols-12">
       {currentlyRunningAgent?.status ? (
-        <div className="absolute top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-full shadow-lg animate-pulse z-[9999]">
+        <div className="absolute top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-full shadow-lg animate-pulse z-9999">
           <span className="font-bold">
             <Loader2 className="inline-block w-4 h-4 mr-2 animate-spin" />
             {currentlyRunningAgent.name} agent executing{" "}
@@ -106,15 +104,8 @@ export default function Canvas() {
           </span>{" "}
         </div>
       ) : (
-        <div className="absolute top-4 right-4 flex gap-2 z-[9999]">
-          <Button
-            onClick={() => setShowMCPConfigModal(true)}
-            className="rounded-full shadow-lg"
-          >
-            <Settings className="w-4 h-4" />
-            <span className="font-medium">MCP Servers</span>
-          </Button>
-
+        <div className="absolute top-4 right-4 flex items-center gap-2 ">
+          <SettingsButton />
           <div className="px-4 py-2">
             <User className="inline-block w-5 h-5 mr-2" />
             <span className="font-bold">{session?.user?.name}</span>
@@ -143,12 +134,6 @@ export default function Canvas() {
           </Suspense>
         </div>
       </div>
-
-      {/* MCP Config Modal */}
-      <MCPConfigModal
-        isOpen={showMCPConfigModal}
-        onCloseAction={() => setShowMCPConfigModal(false)}
-      />
     </div>
   );
 }

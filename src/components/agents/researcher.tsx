@@ -99,7 +99,7 @@ export const AIResearchAgent: FC = () => {
 
   if (isResearchInProgress.current) {
     return (
-      <div className="flex flex-col gap-4 h-full z-[999]">
+      <div className="flex flex-col gap-4 h-full z-999">
         <ResearchPaperSkeleton />
       </div>
     );
@@ -110,8 +110,8 @@ export const AIResearchAgent: FC = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 h-full z-[999]">
-      <div className="flex flex-col gap-2 p-6 bg-white rounded-lg shadow-sm">
+    <div className="flex flex-col gap-4 h-full z-999">
+      <div className="flex flex-col gap-2 p-6 bg-white rounded-lg shadow-xs">
         <ReactMarkdown
           className="prose prose-sm md:prose-base lg:prose-lg prose-slate max-w-none bg-gray-50 p-6 rounded-lg border border-gray-200"
           components={{
@@ -146,7 +146,7 @@ export const AIResearchAgent: FC = () => {
         </ReactMarkdown>
         {researchAgentState.resources &&
           researchAgentState.resources.length > 0 && (
-            <div className="prose max-w-none z-[999] bg-gray-50 p-6 rounded-lg border border-gray-200">
+            <div className="prose max-w-none z-999 bg-gray-50 p-6 rounded-lg border border-gray-200">
               <h2 className="text-2xl font-bold mb-4 mt-8">Resources</h2>
               <ul className="list-disc pl-6 mb-4 space-y-2">
                 {researchAgentState.resources.map((resource, index) => (

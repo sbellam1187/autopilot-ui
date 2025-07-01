@@ -201,7 +201,7 @@ export default function MapComponent() {
                     {trip.places?.map((place) => (
                       <div
                         key={place.id}
-                        className="bg-white p-4 rounded-md shadow-sm"
+                        className="bg-white p-4 rounded-md shadow-xs"
                       >
                         <h4 className="font-medium text-gray-800">
                           {place.name}
@@ -244,7 +244,7 @@ export default function MapComponent() {
               </Button>
               <Button
                 variant="destructive"
-                className="flex-1 mx-4 flex items-center justify-center space-x-2 px-4 py-2 hover:bg-red-600 focus:outline-none text-white bg-red-500"
+                className="flex-1 mx-4 flex items-center justify-center space-x-2 px-4 py-2 hover:bg-red-600 focus:outline-hidden text-white bg-red-500"
                 onClick={() => {
                   respond?.("CANCEL");
                 }}
@@ -364,7 +364,7 @@ export default function MapComponent() {
         ))}
       </Map>
       {researchAgentActive.current && (
-        <div className="absolute inset-0 z-[100] pointer-events-none">
+        <div className="absolute inset-0 z-100 pointer-events-none">
           <div className="w-full h-full bg-[url('/map-overlay.png')] bg-cover bg-center bg-no-repeat" />
         </div>
       )}

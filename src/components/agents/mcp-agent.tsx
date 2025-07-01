@@ -113,8 +113,8 @@ export const MCPAgent: FC = () => {
 
   if (isProcessing.current) {
     return (
-      <div className="flex flex-col gap-4 h-full z-[999]">
-        <div className="animate-pulse p-6 bg-white rounded-lg shadow-sm">
+      <div className="flex flex-col gap-4 h-full z-999">
+        <div className="animate-pulse p-6 bg-white rounded-lg shadow-xs">
           <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
           <div className="h-4 bg-gray-200 rounded w-5/6 mb-2"></div>
           <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
@@ -129,8 +129,8 @@ export const MCPAgent: FC = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 h-full z-[999]">
-      <div className="flex flex-col gap-2 p-6 bg-white rounded-lg shadow-sm">
+    <div className="flex flex-col gap-4 h-full z-999">
+      <div className="flex flex-col gap-2 p-6 bg-white rounded-lg shadow-xs">
         <ReactMarkdown
           className="prose prose-sm md:prose-base lg:prose-lg prose-slate max-w-none bg-gray-50 p-6 rounded-lg border border-gray-200"
           components={{

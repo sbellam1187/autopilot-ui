@@ -4,6 +4,7 @@ import "./globals.css";
 import CopilotProvider from "@/providers/CopilotProvider";
 import { CopilotChatProvider } from "@/context/CopilotChatContext";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -41,6 +42,7 @@ export default function RootLayout({
             <CopilotChatProvider>{children}</CopilotChatProvider>
           </CopilotProvider>
         </ThemeProvider>
+        <Toaster richColors />
       </body>
     </html>
   );
