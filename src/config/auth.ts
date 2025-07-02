@@ -35,6 +35,7 @@ export const authConfig: NextAuthOptions = {
     async jwt({ token, account, trigger, session }) {
       if (account) {
         token.idToken = account.id_token;
+        token.accessToken = account.access_token;
         if (token.githubToken && account.access_token) {
           token.githubToken = account.access_token;
         }
@@ -56,7 +57,7 @@ export const authConfig: NextAuthOptions = {
           throw new Error("Session or token is undefined");
         }
 
-        session.token = token.idToken as string;
+        session.token = token.accessToken as string;
 
         if (token.githubToken) {
           session.githubToken = token.githubToken as string;
