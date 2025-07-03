@@ -48,8 +48,10 @@ export default function GitHubOAuth({
         setAuthToken(event.data.token);
         setGithubTokenAction?.(event.data.token);
 
-        await update({ githubToken: event.data.token });
-        toast.success("Successfully connected GitHub account");
+        await update({ githubToken: event.data.token }).then(() => {
+          toast.success("Successfully connected GitHub account!");
+        });
+
         setIsConnecting(false);
       }
     };
@@ -67,8 +69,9 @@ export default function GitHubOAuth({
 
   const disconnectGitHub = async () => {
     setAuthToken(null);
-    await update({ githubToken: null });
-    toast.error("Disconnected your GitHub account");
+    await update({ githubToken: null }).then(() => {
+      toast.error("Disconnected your GitHub account");
+    });
     setGithubTokenAction(null);
   };
 

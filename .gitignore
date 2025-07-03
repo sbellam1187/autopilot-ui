@@ -44,3 +44,4 @@ frontend/.next
 
 # database files
 /pgdata/
+/generated/prisma

@@ -1,10 +1,13 @@
+import prisma from "@/lib/prisma";
 import { NextAuthOptions } from "next-auth";
+import { encryptToken } from "@/lib/encryption";
 
 // Extend the NextAuth session interface to include a token
 declare module "next-auth" {
   interface Session {
     token?: string;
     githubToken?: string;
+    sub: string;
   }
 
   interface JWT {
@@ -35,17 +38,61 @@ export const authConfig: NextAuthOptions = {
     async jwt({ token, account, trigger, session }) {
       if (account) {
         token.idToken = account.id_token;
-        token.accessToken = account.access_token;
-        if (token.githubToken && account.access_token) {
-          token.githubToken = account.access_token;
+      }
+
+      if (!token.githubToken || token.githubToken === "undefined") {
+        const result = await prisma.mcp_keys.findUnique({
+          select: {
+            api_key: true,
+          },
+          where: {
+            user_id_service: {
+              user_id: Number(token.sub),
+              service: "github",
+            },
+          },
+        });
+        if (result) {
+          token.githubToken = result.api_key;
         }
       }
 
       if (trigger === "update") {
         if (session?.githubToken) {
-          token.githubToken = session.githubToken;
+          const encryptedToken = encryptToken(session.githubToken);
+          await prisma.mcp_keys
+            .upsert({
+              where: {
+                user_id_service: {
+                  user_id: Number(token.sub),
+                  service: "github",
+                },
+              },
+              update: {
+                api_key: encryptedToken,
+              },
+              create: {
+                user_id: Number(token.sub),
+                service: "github",
+                api_key: encryptedToken,
+              },
+            })
+            .then(() => {
+              token.githubToken = session.githubToken;
+            });
         } else {
-          token.githubToken = null;
+          await prisma.mcp_keys
+            .delete({
+              where: {
+                user_id_service: {
+                  user_id: Number(token.sub),
+                  service: "github",
+                },
+              },
+            })
+            .then(() => {
+              token.githubToken = null;
+            });
         }
       }
 
@@ -57,6 +104,7 @@ export const authConfig: NextAuthOptions = {
           throw new Error("Session or token is undefined");
         }
 
+        session.sub = token.sub as string;
         session.token = token.accessToken as string;
 
         if (token.githubToken) {

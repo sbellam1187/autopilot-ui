@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("JDBC_URL")
+}
+
+model mcp_keys {
+  id              Int       @id @default(autoincrement())
+  user_id         Int
+  service         String    @db.VarChar(50)
+  api_key         String
+  expiration_date DateTime? @db.Timestamptz(6)
+  updated_at      DateTime? @default(now()) @db.Timestamptz(6)
+  is_active       Boolean?  @default(true)
+
+  @@unique([user_id, service], map: "unique_user_service")
+  @@index([user_id, service], map: "idx_mcp_keys_user_service")
+}
+
+model service2app {
+  id         Int       @id @default(autoincrement())
+  jsondata   Json?
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+}
