@@ -1,7 +1,7 @@
 services:
   frontend:
     container_name: autopilot-ui
-    image: docker.aa.com/prod/autopilot-ui:v0.13.0 #localhost/autopilot-ui:latest
+    image: docker.aa.com/prod/autopilot-ui:v0.14.1 #localhost/autopilot-ui:latest
     ports:
       - "3000:3000"
     env_file:
@@ -9,7 +9,7 @@ services:
 
   agents:
     container_name: autopilot-agents
-    image: docker.aa.com/prod/autopilot-agents:v0.7.0 #localhost/autopilot-agents:latest
+    image: docker.aa.com/prod/autopilot-agents:v0.8.0 #localhost/autopilot-agents:latest
     ports:
       - "8000:8000"
     env_file:
@@ -27,7 +27,7 @@ services:
     container_name: postgres
     image: docker.aa.com/prod/pgvector/pgvector:pg17
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
@@ -36,3 +36,7 @@ services:
       POSTGRES_PASSWORD: password
     env_file:
       - .env
+
+volumes:
+  postgres_data:
+    driver: local
