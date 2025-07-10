@@ -1,7 +1,7 @@
 apiVersion: runway.aa.com/v1alpha2
 kind: Ephemeral
 metadata:
-  name: navigatoruiephemeral
+  name: autopilot-ephemeral
   annotations:
     enableCloudIngress: "true"
     backstageName: autopilot-ui
@@ -13,13 +13,22 @@ metadata:
 spec:
   repo: autopilot-ui
   maxEphemerals: 10
-  maxDaysWithoutUpdate: 4
+  maxDaysWithoutUpdate: 5
   template:
     containerName: docker.aa.com/nonprod/autopilot-ui
     containerTag: placeholder
     port: 3000
-  env:
-    - name: AUTH_WELLKNOWN
-      value: 'https://idptest.aa.com/.well-known/openid-configuration'
-    - name: NEXTAUTH_URL
-      value: https://{{ .Context.EphemeralName }}.cloud.aa.com
+    healthCheck:
+      endpoint: /
+      enabled: False
+      port: 3000
+    reachableServices:
+      - autopilot-agents-nonprod.autopilot-nonprod.svc.8000.mesh
+    secretProviders:
+      - vault:
+          vaultNamespace: automation/apimgmtgql-autopilotnp-p
+          secretEngineMount: secrets
+          secretPath: ephemeral
+    env:
+      - name: NEXTAUTH_URL
+        value: https://{{ .Context.EphemeralName }}.cloud.aa.com
