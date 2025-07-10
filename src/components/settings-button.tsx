@@ -20,13 +20,37 @@ import {
 import { GitHubLogo } from "@/components/ui/svg-logos";
 import { useSession } from "next-auth/react";
 import GitHubOAuth from "./github-button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getGithubKey } from "@/lib/server.actions";
+import { useUpdateToken } from "@/lib/actions";
 
 export default function SettingsButton() {
   const { data: session } = useSession();
   const [githubToken, setGithubToken] = useState<string | null>(
     session?.githubToken || null,
   );
+  const { updateGHToken } = useUpdateToken();
+
+  useEffect(() => {
+    const findToken = async () => {
+      if (!session?.sub) return;
+
+      try {
+        const api_key = await getGithubKey(Number(session?.sub));
+
+        if (api_key && api_key !== githubToken) {
+          setGithubToken(api_key);
+          updateGHToken(api_key);
+        }
+      } catch (error) {
+        console.error("Error fetching GitHub token:", error);
+      }
+    };
+
+    if (session?.sub && !githubToken) {
+      findToken();
+    }
+  }, [githubToken, session?.sub, updateGHToken]);
 
   return (
     <Sheet>

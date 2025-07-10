@@ -5,6 +5,7 @@ import { SetStateAction, useEffect, useState, Dispatch } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { encryptTokenAction } from "@/lib/server.actions";
 
 interface GitHubOAuthProps {
   setGitHubTokenAction: Dispatch<SetStateAction<string | null>>;
@@ -45,10 +46,11 @@ export default function GitHubOAuth({
     const handleMessage = async (event: MessageEvent) => {
       if (event.data?.type === "github-oauth-success" && event.data?.token) {
         popup?.close();
-        setAuthToken(event.data.token);
-        setGithubTokenAction?.(event.data.token);
+        const token = await encryptTokenAction(event.data.token);
+        setAuthToken(token);
+        setGithubTokenAction?.(token);
 
-        await update({ githubToken: event.data.token }).then(() => {
+        await update({ githubToken: token }).then(() => {
           toast.success("Successfully connected GitHub account!");
         });
 

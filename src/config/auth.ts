@@ -1,6 +1,5 @@
-import prisma from "@/lib/prisma";
+import { getPrismaWithAuth } from "@/lib/prisma";
 import { NextAuthOptions } from "next-auth";
-import { encryptToken } from "@/lib/encryption";
 
 // Extend the NextAuth session interface to include a token
 declare module "next-auth" {
@@ -39,27 +38,9 @@ export const authConfig: NextAuthOptions = {
       if (account) {
         token.idToken = account.id_token;
       }
-
-      if (!token.githubToken || token.githubToken === "undefined") {
-        const result = await prisma.mcp_keys.findUnique({
-          select: {
-            api_key: true,
-          },
-          where: {
-            user_id_service: {
-              user_id: Number(token.sub),
-              service: "github",
-            },
-          },
-        });
-        if (result) {
-          token.githubToken = result.api_key;
-        }
-      }
-
       if (trigger === "update") {
         if (session?.githubToken) {
-          const encryptedToken = encryptToken(session.githubToken);
+          const prisma = await getPrismaWithAuth();
           await prisma.mcp_keys
             .upsert({
               where: {
@@ -69,18 +50,19 @@ export const authConfig: NextAuthOptions = {
                 },
               },
               update: {
-                api_key: encryptedToken,
+                api_key: session.githubToken,
               },
               create: {
                 user_id: Number(token.sub),
                 service: "github",
-                api_key: encryptedToken,
+                api_key: session.githubToken,
               },
             })
             .then(() => {
               token.githubToken = session.githubToken;
             });
         } else {
+          const prisma = await getPrismaWithAuth();
           await prisma.mcp_keys
             .delete({
               where: {

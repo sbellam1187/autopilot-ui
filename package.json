@@ -10,6 +10,7 @@
     "test": "echo \"Info: no tests provided\" && exit 0"
   },
   "dependencies": {
+    "@azure/identity": "^4.10.2",
     "@copilotkit/react-core": "^1.9.1",
     "@copilotkit/react-ui": "^1.8.13",
     "@copilotkit/runtime": "1.8.11",
@@ -39,6 +40,7 @@
     "next-auth": "^4.24.11",
     "next-themes": "^0.4.6",
     "openai": "^4.85.1",
+    "pg": "^8.16.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-leaflet": "^5.0.0",

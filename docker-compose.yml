@@ -1,7 +1,7 @@
 services:
   frontend:
     container_name: autopilot-ui
-    image: docker.aa.com/prod/autopilot-ui:v0.14.1 #localhost/autopilot-ui:latest
+    image: docker.aa.com/prod/autopilot-ui:v0.15.1 #localhost/autopilot-ui:latest
     ports:
       - "3000:3000"
     env_file:

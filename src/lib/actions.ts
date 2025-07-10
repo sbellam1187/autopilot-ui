@@ -1,5 +1,7 @@
 "use client";
 
+import { useSession } from "next-auth/react";
+
 export function containsMarkdown(input: string): boolean {
   const markdownPatterns = [
     /(^|\s)(#{1,6})\s.+/, // headers (#, ##, etc.)
@@ -14,4 +16,18 @@ export function containsMarkdown(input: string): boolean {
   ];
 
   return markdownPatterns.some((pattern) => pattern.test(input));
+}
+
+export function useUpdateToken() {
+  const { update } = useSession();
+
+  const updateGHToken = async (token: string) => {
+    try {
+      await update({ githubToken: token });
+    } catch (error) {
+      console.error("Failed to save token in session: ", error);
+    }
+  };
+
+  return { updateGHToken };
 }

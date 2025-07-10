@@ -1,12 +1,11 @@
 import crypto from "crypto";
 
 const ALGORITHM = "aes-256-gcm";
-const SECRET_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_SECRET_KEY;
 
 //TODO: we need to create some integraty for environment variables
-const key = Buffer.from(SECRET_KEY ?? "", "hex");
 
-export function encryptToken(token: string): string {
+export function encryptToken(token: string, secret_key: string): string {
+  const key = Buffer.from(secret_key ?? "", "hex");
   const iv = crypto.randomBytes(16);
   const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
   cipher.setAAD(Buffer.from("github-token", "utf8"));
@@ -19,8 +18,13 @@ export function encryptToken(token: string): string {
   return iv.toString("hex") + ":" + authTag.toString("hex") + ":" + encrypted;
 }
 
-export function decryptToken(encryptedData: string): string {
+export function decryptToken(
+  encryptedData: string,
+  secret_key: string,
+): string {
   const parts = encryptedData.split(":");
+
+  const key = Buffer.from(secret_key ?? "", "hex");
 
   if (parts.length !== 3) {
     throw new Error("Invalid encrypted data format");
