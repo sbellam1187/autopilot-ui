@@ -37,6 +37,7 @@ export const authConfig: NextAuthOptions = {
     async jwt({ token, account, trigger, session }) {
       if (account) {
         token.idToken = account.id_token;
+        token.accessToken = account.access_token;
       }
       if (trigger === "update") {
         if (session?.githubToken) {
