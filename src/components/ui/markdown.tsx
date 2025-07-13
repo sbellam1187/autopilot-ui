@@ -90,7 +90,7 @@ const INITIAL_COMPONENTS: Partial<Components> = {
           </Button>
         </CodeBlockGroup>
         <CodeBlockCode
-          theme={theme === "dark" ? "github-dark" : "github-light"}
+          theme={theme === "dark" ? "gruvbox-dark-soft" : "gruvbox-light-soft"}
           code={children as string}
           language={language}
         />
