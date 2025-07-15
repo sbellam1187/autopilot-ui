@@ -33,13 +33,6 @@ export default function ChatPage() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey && input.trim().length !== 0) {
-      e.preventDefault();
-      handleMessage();
-    }
-  };
-
   return (
     <div className="h-screen w-full flex justify-center items-center ">
       <div className="min-w-[600px] min-h-[400px]">
@@ -54,10 +47,7 @@ export default function ChatPage() {
           onSubmit={handleMessage}
           className="w-full h-full mt-8"
         >
-          <PromptInputTextarea
-            placeholder="Ask me anything..."
-            onKeyDown={handleKeyDown}
-          />
+          <PromptInputTextarea placeholder="Ask me anything..." />
           <PromptInputActions className="justify-end">
             <Button
               disabled={input.trim().length === 0}
