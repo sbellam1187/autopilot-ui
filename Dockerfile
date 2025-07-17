@@ -1,4 +1,4 @@
-FROM docker.aa.com/prod/aa.com/node:23@sha256:fc8d5295278fd5c66d5eb74d4b7f58ba69d3944a6109e6e429c1e605d3591649
+FROM docker.aa.com/prod/aa.com/node:23@sha256:da273289d1742d2c13929327c8e88eb21cd639b14ee433cdc4546bd8d78a3fba
 
 WORKDIR /app
 

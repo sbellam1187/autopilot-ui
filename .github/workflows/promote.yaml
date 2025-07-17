@@ -75,7 +75,7 @@ jobs:
 
       - name: Create Cherwell Change Request
         if: ${{ inputs.environment == 'current' }}
-        uses: AAInternal/enterprise-change-action@c26a166732f0549064d45e33ef58ecf26581a860 # v0
+        uses: AAInternal/enterprise-change-action@44d74f71de3896e6beb1f590541d27d9095510fb # v0
         with:
           username: ${{ secrets.CHERWELL_USR }}
           password: ${{ secrets.CHERWELL_PWD }}
