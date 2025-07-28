@@ -27,4 +27,4 @@ spec:
     minimum: 1
     maximum: 2
   reachableServices:
-    - autopilot-agents-prod.autopilot-nonprod.svc.cluster.local
+    - autopilot-agents.autopilot-prod.svc.cluster.local
