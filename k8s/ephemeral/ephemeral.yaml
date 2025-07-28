@@ -23,7 +23,7 @@ spec:
       enabled: False
       port: 3000
     reachableServices:
-      - autopilot-agents-nonprod.autopilot-nonprod.svc.8000.mesh
+      - autopilot-agents-nonprod.autopilot-nonprod.svc.cluster.local
     secretProviders:
       - vault:
           vaultNamespace: automation/apimgmtgql-autopilotnp-p
