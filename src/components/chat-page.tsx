@@ -7,17 +7,15 @@ import {
 } from "@/components/ui/prompt-input";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { useCopilotChatContext } from "@/context/CopilotChatContext";
-import { TextMessage, Role } from "@copilotkit/runtime-client-gql";
 import { Button } from "./ui/button";
 import { ArrowUpIcon } from "lucide-react";
 import PromptSuggestionsRow from "./prompt-suggestions-row";
+import { useChatContext } from "@/providers/ChatProvider";
 
 export default function ChatPage() {
   const { data: session } = useSession();
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [input, setInput] = useState<string>("");
-  const { appendMessage } = useCopilotChatContext();
+  const { input, setInput, handleSubmit } = useChatContext();
 
   useEffect(() => {
     if (session) {
@@ -26,10 +24,9 @@ export default function ChatPage() {
     }
   }, [session]);
 
-  const handleMessage = () => {
+  const onSubmit = () => {
     if (input.trim() !== "") {
-      appendMessage(new TextMessage({ content: input, role: Role.User }));
-      setInput("");
+      handleSubmit();
     }
   };
 
@@ -43,16 +40,16 @@ export default function ChatPage() {
         </h2>
         <PromptInput
           value={input}
-          onValueChange={(e) => setInput(e)}
-          onSubmit={handleMessage}
+          onValueChange={(value) => setInput(value)}
+          onSubmit={() => onSubmit()}
           className="w-full h-full mt-8"
         >
           <PromptInputTextarea placeholder="Ask me anything..." />
           <PromptInputActions className="justify-end">
             <Button
+              onClick={() => onSubmit()}
               disabled={input.trim().length === 0}
               className="w-9 h-9 rounded-full"
-              onClick={handleMessage}
             >
               <ArrowUpIcon className="h-4 w-4" />
             </Button>

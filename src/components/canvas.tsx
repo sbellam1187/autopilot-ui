@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import ChatWindow from "@/components/chat-window";
-import { useCopilotChatContext } from "@/context/CopilotChatContext";
 import { Markdown } from "@/components/ui/markdown";
 import ChatPage from "@/components/chat-page";
+import { useChatContext } from "@/providers/ChatProvider";
 
 const DefaultView = () => (
   <div className="flex items-center justify-center h-full text-gray-600">
@@ -29,9 +29,9 @@ const DefaultView = () => (
 );
 
 export default function Canvas() {
-  const { responseMessage, visibleMessages } = useCopilotChatContext();
+  const { responseMessage, messages } = useChatContext();
 
-  if (visibleMessages.length === 0) {
+  if (messages.length === 0) {
     return <ChatPage />;
   }
 

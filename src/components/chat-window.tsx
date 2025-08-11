@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ResponseBlockType,
-  useCopilotChatContext,
-} from "@/context/CopilotChatContext";
 import { Button } from "@/components/ui/button";
-import { Role, TextMessage } from "@copilotkit/runtime-client-gql";
-import type { Message as CopilotMessage } from "@copilotkit/runtime-client-gql";
-import { useEffect, useState } from "react";
 import { containsMarkdown } from "@/lib/actions";
 import {
   ChatContainerRoot,
@@ -23,134 +16,170 @@ import {
 import { Square, ArrowUp } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import ResponseBlock from "@/components/response-block";
+import { useChatContext } from "@/providers/ChatProvider";
+import {
+  UIDataTypes,
+  UIMessage,
+  UIMessagePart,
+  UITools,
+  isToolUIPart,
+} from "ai";
+import { Tool, ToolPart } from "./ui/tool";
+import { ResponseBlockType } from "@/providers/ChatProvider";
+import { useMemo } from "react";
 
 export default function ChatWindow() {
-  const {
-    visibleMessages,
-    appendMessage,
-    isLoading,
-    stopGeneration,
-    setResponseMessage,
-    setResponseMessages,
-    responseMessages,
-  } = useCopilotChatContext();
-  const [message, setMessage] = useState("");
+  const { messages, status, stopGeneration, handleSubmit, input, setInput } =
+    useChatContext();
 
   const onSubmitMessage = () => {
-    if (!isLoading) {
-      appendMessage(new TextMessage({ content: message, role: Role.User }));
-      setMessage("");
+    if (status === "ready") {
+      handleSubmit();
+      setInput("");
     } else {
       stopGeneration();
     }
   };
 
-  useEffect(() => {
-    const markdownMessages = visibleMessages
-      .filter(
-        (msg) =>
-          msg.isTextMessage() &&
-          containsMarkdown(msg.content) &&
-          msg.content !== "" &&
-          msg.status.code === "Success",
-      )
-      .map((msg) => {
-        return {
-          id: msg.id,
-          message: msg,
-          type: "markdown",
-          title: `Response #${responseMessages.length + 1}`,
-        } as ResponseBlockType;
-      });
+  const filteredMessages = useMemo(() => {
+    if (messages.length === 0) return [];
 
-    if (markdownMessages.length > 0) {
-      const latestMarkdownMessage =
-        markdownMessages[markdownMessages.length - 1];
-      setResponseMessage(latestMarkdownMessage);
-    }
+    const result: UIMessage[] = [];
+    let i = 0;
 
-    if (markdownMessages.length > 0) {
-      const newMessages = markdownMessages.filter(
-        (newMsg) =>
-          !responseMessages.some((existingMsg) => existingMsg.id === newMsg.id),
-      );
+    while (i < messages.length) {
+      const message = messages[i];
 
-      if (newMessages.length > 0) {
-        setResponseMessages([...responseMessages, ...newMessages]);
+      if (message.role === "user") {
+        // Always include user messages
+        result.push(message);
+        i++;
+      } else if (message.role === "assistant") {
+        // For assistant messages, find the last one in the consecutive sequence
+        let lastAssistantMessage = message;
+        let j = i + 1;
+
+        // Look ahead to find the last consecutive assistant message
+        while (j < messages.length && messages[j].role === "assistant") {
+          lastAssistantMessage = messages[j];
+          j++;
+        }
+
+        // Add only the last assistant message in this sequence
+        result.push(lastAssistantMessage);
+        i = j; // Skip to after all the assistant messages we just processed
+      } else {
+        // For any other role, just include it
+        result.push(message);
+        i++;
       }
     }
-  }, [
-    visibleMessages,
-    responseMessages,
-    setResponseMessage,
-    setResponseMessages,
-  ]);
 
-  const renderMessage = ({ message }: { message: CopilotMessage }) => {
-    if (message.isTextMessage()) {
-      if (!containsMarkdown(message.content) && message.content !== "") {
-        if (message.role === Role.User) {
+    return result;
+  }, [messages]);
+
+  const renderPart = ({
+    part,
+    role,
+    messageId,
+  }: {
+    part: UIMessagePart<UIDataTypes, UITools>;
+    role: string;
+    messageId: string;
+  }) => {
+    if (part.type === "text") {
+      if (!containsMarkdown(part.text) && part.text.trim() !== "") {
+        if (role === "user") {
           return (
-            <Message key={message.id} className="justify-end">
-              <MessageContent>{message.content}</MessageContent>
+            <Message key={messageId} className="justify-end">
+              <MessageContent>{part.text}</MessageContent>
             </Message>
           );
         } else {
           return (
-            <Message key={message.id} className="justify-start">
+            <Message key={messageId} className="justify-start">
               <MessageContent className="bg-transparent">
-                {message.content}
+                {part.text}
               </MessageContent>
             </Message>
           );
         }
-      } else if (containsMarkdown(message.content) && message.content !== "") {
-        const existingResponseMessage = responseMessages.find(
-          (resp) => resp.id === message.id,
-        );
+      } else if (containsMarkdown(part.text) && part.text !== "") {
+        const responseBlock = {
+          id: messageId,
+          message: {
+            content: part.text,
+            role: role,
+          },
+          type: "markdown",
+          title: status === "streaming" ? "Generating..." : `Response`,
+        } as ResponseBlockType;
 
-        if (existingResponseMessage) {
-          return (
-            <ResponseBlock key={message.id} message={existingResponseMessage} />
-          );
-        }
-        return null;
+        return <ResponseBlock key={messageId} message={responseBlock} />;
       }
-      return null;
     }
+    if (isToolUIPart(part)) {
+      return (
+        <Tool key={`${messageId}-${part.type}`} toolPart={part as ToolPart} />
+      );
+    }
+    return null;
+  };
+
+  const renderMessage = (message: UIMessage) => {
+    return (
+      <div key={message.id} className="space-y-2">
+        {message.parts.map((part, index) => {
+          return (
+            <div key={index}>
+              {renderPart({
+                part: part,
+                role: message.role,
+                messageId: message.id,
+              })}
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
     <div className="flex flex-col h-full">
       <ChatContainerRoot className="flex-1">
         <ChatContainerContent className="space-y-4 p-4">
-          {visibleMessages.map((message) => {
-            return renderMessage({ message });
-          })}
-          {isLoading && <Loader variant="loading-dots" text="Thinking" />}
+          {filteredMessages.map((message) => renderMessage(message))}
+          {status === "streaming" && <Loader variant="loading-dots" text="" />}
         </ChatContainerContent>
       </ChatContainerRoot>
       <div className="flex">
         <PromptInput
-          value={message}
-          onValueChange={(content) => setMessage(content)}
-          onSubmit={onSubmitMessage}
-          isLoading={isLoading}
+          value={input}
+          onValueChange={(value) => setInput(value)}
+          onSubmit={() => onSubmitMessage()}
+          isLoading={status === "streaming" || status === "submitted"}
           className="w-full max-w-(--breakpoint-md)"
         >
           <PromptInputTextarea placeholder="Ask me anything!" />
           <PromptInputActions className="justify-end pt-2">
             <PromptInputAction
-              tooltip={isLoading ? "Stop generation" : "Send message"}
+              tooltip={
+                status === "streaming" || status === "submitted"
+                  ? "Stop generation"
+                  : "Send message"
+              }
             >
               <Button
                 variant="default"
                 size="icon"
                 className="h-8 w-8 rounded-full"
-                onClick={onSubmitMessage}
-                disabled={message.length === 0 && !isLoading}
+                onClick={() => onSubmitMessage()}
+                disabled={
+                  (input.length === 0 && status === "streaming") ||
+                  status === "submitted"
+                }
               >
-                {isLoading ? (
+                {status === "streaming" || status === "submitted" ? (
                   <Square className="size-5 fill-current" />
                 ) : (
                   <ArrowUp className="size-5" />

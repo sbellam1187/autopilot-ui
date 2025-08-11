@@ -5,7 +5,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { Dispatch, SetStateAction } from "react";
 import { JSX } from "react/jsx-runtime";
 
 type PromptSuggestion = {
@@ -19,7 +18,7 @@ export default function PromptSuggestionsButton({
   setInput,
 }: {
   promptSuggestion: PromptSuggestion;
-  setInput: Dispatch<SetStateAction<string>>;
+  setInput: (value: string) => void;
 }) {
   return (
     <DropdownMenu>

@@ -65,6 +65,7 @@ const INITIAL_COMPONENTS: Partial<Components> = {
     };
 
     if (language === "mermaid") {
+      console.log("HITS CODEBLOCK");
       return <MermaidDiagram theme={theme} chart={children as string} />;
     }
 

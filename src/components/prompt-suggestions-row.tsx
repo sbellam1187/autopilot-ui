@@ -1,11 +1,10 @@
 import PromptSuggestionsButton from "@/components/prompt-suggestions-button";
 import { Brain, GraduationCap, Pen, Search } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
 
 export default function PromptSuggestionsRow({
   setInput,
 }: {
-  setInput: Dispatch<SetStateAction<string>>;
+  setInput: (value: string) => void;
 }) {
   const suggestionsData = [
     {

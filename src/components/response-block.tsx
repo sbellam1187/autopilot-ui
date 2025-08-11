@@ -1,14 +1,10 @@
-import {
-  ResponseBlockType,
-  useCopilotChatContext,
-} from "@/context/CopilotChatContext";
-
+import { useChatContext, ResponseBlockType } from "@/providers/ChatProvider";
 export default function ResponseBlock({
   message,
 }: {
   message: ResponseBlockType;
 }) {
-  const { responseMessage, setResponseMessage } = useCopilotChatContext();
+  const { responseMessage, setResponseMessage } = useChatContext();
 
   return (
     <div
