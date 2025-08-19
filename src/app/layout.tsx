@@ -3,7 +3,6 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { ChatProvider } from "@/providers/ChatProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -37,7 +36,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          <ChatProvider>{children}</ChatProvider>
+          {children}
         </ThemeProvider>
         <Toaster richColors />
       </body>

@@ -1,9 +1,18 @@
 "use client";
 
-import React, { createContext, useContext, ReactNode, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  ReactNode,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 import { useChat } from "@ai-sdk/react";
 import { UIMessage, DefaultChatTransport } from "ai";
 import { containsMarkdown } from "@/lib/actions";
+import { useSession } from "next-auth/react";
+import { getRemoteActionUrl } from "@/lib/server.actions";
 
 export type ResponseBlockType = {
   message: {
@@ -75,14 +84,57 @@ export function ChatProvider({
   const [currentAgent, setCurrentAgent] = useState<string>(defaultAgent);
   const [input, setInput] = useState("");
   const sessionId: string = `session_${Date.now()}`;
+  const { data: session } = useSession();
+  const authToken = useRef<string>("");
+  const backendURL = useRef<string>("");
+
+  useEffect(() => {
+    authToken.current = session?.token || "";
+
+    const loadURL = async () => {
+      try {
+        const url = await getRemoteActionUrl();
+        backendURL.current = url;
+      } catch (error) {
+        console.error("Failed to get url", error);
+      }
+    };
+
+    if (backendURL.current === "") {
+      loadURL();
+    }
+  }, [session]);
+
+  const getToken = () => {
+    return authToken.current;
+  };
+
+  const getURL = () => {
+    return backendURL.current;
+  };
 
   const chatMethods = useChat({
     transport: new DefaultChatTransport({
-      api: `/api/chat`,
-      body: {
-        agent: currentAgent,
-        sessionId: sessionId,
+      prepareSendMessagesRequest: ({ messages }) => {
+        return {
+          body: {
+            messages: messages.map((msg) => ({
+              role: msg.role,
+              content: getMessageContent(msg),
+              id: msg.id,
+            })),
+            agent: currentAgent,
+            sessionId: sessionId,
+          },
+          api: `${getURL()}`,
+        };
       },
+      headers: () => ({
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+        "User-Agent": "AutopilotUI-Direct",
+        Connection: "keep-alive",
+      }),
     }),
     onData: (dataPart) => {
       console.group("🔍 Stream Data Debug");

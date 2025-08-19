@@ -51,3 +51,16 @@ export async function decryptTokenAction(token: string): Promise<string> {
     throw new Error("Failed to decrypt token");
   }
 }
+
+export async function getRemoteActionUrl(): Promise<string> {
+  const URL = process.env.REMOTE_ACTION_URL;
+
+  if (URL === undefined) throw new Error("remote action url is undefined");
+
+  try {
+    return URL;
+  } catch (error) {
+    console.error("Environment variable error:", error);
+    throw new Error("Failed to get Remote action url");
+  }
+}
